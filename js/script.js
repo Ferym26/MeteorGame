@@ -58,7 +58,7 @@ const MeteorFall = (function () {
 			this.flameX = null;
 			this.flameY = null || this.posY + this.size - 8;
 			this.flameSize = 7;
-			this.flameSpeed = 5;
+			this.flameSpeed = 7;
 			this.flameTrack = 0;
 
 			this.shieldShowTimer = null;
@@ -89,15 +89,15 @@ const MeteorFall = (function () {
 		// огонь двигателя при полете
 		flame() {
 			let _this = this;
-			this.flameX = _this.posX + (_this.size / 2);
 			settings.bufferCtx.fillStyle = 'orange';
 			settings.bufferCtx.beginPath();
 			settings.bufferCtx.arc(this.flameX, this.flameY, _this.flameSize, 0, 2*Math.PI);
 			settings.bufferCtx.fill();
 			_this.flameY += _this.flameSpeed;
 			_this.flameTrack += _this.flameSpeed;
-			_this.flameSize -= 0.5;
+			_this.flameSize -= 0.7;
 			if (_this.flameTrack > 50) {
+				_this.flameX = _this.posX + (_this.size / 2);
 				_this.flameY = _this.posY + _this.size - 8;
 				_this.flameTrack = 0;
 				_this.flameSize = 7;
@@ -558,7 +558,7 @@ const MeteorFall = (function () {
 			model.addBackground();
 			model.addShip();
 			model.addHeal();
-			model.spawnMeteors(settings.meteorsNum); //!
+			// model.spawnMeteors(settings.meteorsNum); //!
 
 			// цикл отрисовки
 			function loop() {
@@ -656,8 +656,8 @@ const MeteorFall = (function () {
 		},
 		// стартовые события
 		events: function () {
-			// model.startDrow(); //!
-			controller.uiElement.modalGameStart.modal('show'); //!
+			model.startDrow(); //!
+			// controller.uiElement.modalGameStart.modal('show'); //!
 			controller.uiElement.btnStart.addEventListener('click', controller.startGame);
 			controller.uiElement.btnRestart.addEventListener('click', controller.restartGame);
 			controller.uiElement.btnAddUserName.addEventListener('click', controller.addUserName);
