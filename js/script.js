@@ -558,7 +558,7 @@ const MeteorFall = (function () {
 			model.addBackground();
 			model.addShip();
 			model.addHeal();
-			// model.spawnMeteors(settings.meteorsNum); //!
+			model.spawnMeteors(settings.meteorsNum); //!
 
 			// цикл отрисовки
 			function loop() {
@@ -656,8 +656,8 @@ const MeteorFall = (function () {
 		},
 		// стартовые события
 		events: function () {
-			model.startDrow(); //!
-			// controller.uiElement.modalGameStart.modal('show'); //!
+			// model.startDrow(); //!
+			controller.uiElement.modalGameStart.modal('show'); //!
 			controller.uiElement.btnStart.addEventListener('click', controller.startGame);
 			controller.uiElement.btnRestart.addEventListener('click', controller.restartGame);
 			controller.uiElement.btnAddUserName.addEventListener('click', controller.addUserName);
