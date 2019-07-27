@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Meteor fall</title>
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap&subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="./css/style.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+
+	<div class="space"></div>
+	
+	<div class="game-panel" style='display: none;'>
+		<div class="game-panel__inner">
+			<div class="game-panel__username">Имя игрока: <span></span></div>
+			<div class="game-panel__score">Кол-во очков: <span>0</span></div>
+			<div class="game-panel__lvl">Уровень сложности: <span>1</span></div>
+			<div class="game-panel__durability">Прочность корабля: <span>100</span>%</div>
+		</div>
+	</div>
+
+	<canvas class="game-field js_game"></canvas>
+
+	<div class="modal fade" id="gameStart" tabindex="-1" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Meteor Fall v1.0</h5>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="">Введите ваше имя</label>
+						<div class="input-group">
+							<input type="text" class="js_input-name form-control" placeholder="Имя">
+							<div class="input-group-append">
+								<button class="js_add-userName btn btn-outline-secondary"
+									type="button">Добавить</button>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="accordion" id="accordionExample">
+							<div class="card">
+								<div class="card-header" id="headingOne">
+									<h2 class="mb-0">
+										<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+											Описание игры
+										</button>
+									</h2>
+								</div>
+
+								<div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+									data-parent="#accordionExample">
+									<div class="card-body">
+										<ul>
+											<li>Управляйте кораблем с помощью мыши и уворачивайтесь от падающих метеоритов</li>
+											<li>Подбирайте аптечки, они восстанвят часть прочности корабля</li>
+											<li>Со временем увеличивается сложность и повышается кол-во метеоритов</li>
+											<li>Очки начисляются за метеориты. Чем выше уровень сложности - тем больше очков вы получаете</li>
+											<li>Имя игрока и набраные очки хранятся в Firebase. Меньший результат того же игрока не перезаписывается</li>
+											<li></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="card">
+								<div class="card-header" id="headingTwo">
+									<h2 class="mb-0">
+										<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+											В разработке
+										</button>
+									</h2>
+								</div>
+								<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+									data-parent="#accordionExample">
+									<div class="card-body">
+										<ul>
+											<li>Поворот корабля при перемещении</li>
+											<li>Стрельба</li>
+											<li>Вращение метеоритов при падении</li>
+											<li>Частицы</li>
+											<li>Улучшеная модель столкновений</li>
+											<li></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<button class="js_start-game btn btn-success btn-lg btn-block" disabled>Начать игру</button>
+						<div class="progress" style='display: none;'>
+							<div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+								role="progressbar" style="width: 0%"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="gameOverModal" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title">GAME OVER</h3>
+				</div>
+				<div class="modal-body">
+					<h4 class='mb-3'><span class='js_modalUserName'></span>, ты набрал всего <span class="badge badge-secondary js_modalUserResult"></span></h4>
+					<div class="form-group">
+						<button class="js_show-result-table btn btn-info" data-toggle="tooltip" data-placement="bottom" title="Но ты не один из них ^_^">
+							Показать 10 лучших игроков
+						</button>
+					</div>
+					<div class="js_result-table" style='display: none'>
+						<table class="table">
+								<thead class="thead-dark">
+									<tr>
+										<th></th>
+										<th>Имя игрока</th>
+										<th>Очки</ths>
+									</tr>
+								</thead>
+								<tbody class='js_result-list'></tbody>
+							</table>
+					</div>
+					<div class="form-group">
+						<button class="js_restart-game btn btn-warning btn-lg btn-block">Начать заново</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="./js/libs/jquery-3.3.1.slim.min.js"></script>
+	<script src="./js/libs/popper.min.js"></script>
+	<script src="./js/libs/bootstrap.min.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/6.3.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/6.3.0/firebase-database.js"></script>
+	
+	<script src='js/firebase.js'></script>
+	<script src="js/script.js"></script>
+</body>
+
+</html>
